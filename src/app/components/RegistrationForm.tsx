@@ -78,7 +78,7 @@ export const RegistrationForm: React.FC = () => {
       setIsSubmitting(true);
 
       try {
-        const response = await fetch("/api/send-mail", {
+        const response = await fetch("/api/send-email", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
