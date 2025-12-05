@@ -184,11 +184,8 @@ export const RegistrationForm: React.FC = () => {
               </span>
               .
               <br />
-              Your access has been secured. A confirmation message along with
-              your entry code has been sent to your mail address.
+              Your access has been secured. A confirmation message has been sent to your mail address.
               <br />
-              Please bring that mail message with you when you arrive at the
-              venue.
             </p>
           </div>
 
