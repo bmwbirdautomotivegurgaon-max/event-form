@@ -12,7 +12,6 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-
     const { name, email, message } = req.body;
 
     const result = await db.collection("form_submissions").insertOne({

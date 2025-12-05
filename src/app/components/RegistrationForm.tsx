@@ -339,6 +339,7 @@ export const RegistrationForm: React.FC = () => {
                 className={`h-4 w-4 rounded border-[#C5A059] accent-[#C5A059] text-white focus:ring-0 cursor-pointer`}
               />
             </div>
+
             <div className="flex-1">
               <label htmlFor="agreeWhatsApp" className="text-sm text-gray-700">
                 I agree to receive event updates email.
