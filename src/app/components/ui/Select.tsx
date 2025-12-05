@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDown, Check } from "lucide-react";
 
 interface SelectOption {
   value: string | number;
@@ -15,25 +17,28 @@ interface SelectProps {
   className?: string;
 }
 
-export const Select: React.FC<SelectProps> = ({ 
-  label, 
-  options, 
-  value, 
-  onChange, 
-  error, 
-  className 
+export const Select: React.FC<SelectProps> = ({
+  label,
+  options,
+  value,
+  onChange,
+  error,
+  className,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleSelect = (optionValue: string | number) => {
@@ -43,15 +48,17 @@ export const Select: React.FC<SelectProps> = ({
     setIsOpen(false);
   };
 
-  const selectedOption = options.find(opt => String(opt.value) === String(value));
+  const selectedOption = options.find(
+    (opt) => String(opt.value) === String(value)
+  );
 
   return (
-    <div 
-      className={`relative flex flex-col gap-1 w-full ${className || ''}`} 
+    <div
+      className={`relative flex flex-col gap-1 w-full ${className || ""}`}
       ref={containerRef}
     >
-      <div 
-        className="relative pt-4 cursor-pointer group" 
+      <div
+        className="relative pt-4 cursor-pointer group"
         onClick={() => setIsOpen(!isOpen)}
         role="button"
         aria-haspopup="listbox"
@@ -61,9 +68,10 @@ export const Select: React.FC<SelectProps> = ({
         <label
           className={`
             absolute transition-all duration-300 pointer-events-none font-medium z-10
-            ${isOpen || value 
-              ? 'text-xs -top-0 text-gold-600' 
-              : 'text-sm top-4 text-gray-400 group-hover:text-gray-500'
+            ${
+              isOpen || value
+                ? "text-xs -top-0 text-[#B08D45]"
+                : "text-sm top-4 text-gray-400 group-hover:text-gray-500"
             }
           `}
         >
@@ -71,38 +79,50 @@ export const Select: React.FC<SelectProps> = ({
         </label>
 
         {/* Display Value Area */}
-        <div 
+        <div
           className={`
             w-full bg-transparent py-2 border-b transition-all duration-300 flex items-center justify-between
-            ${error 
-              ? 'border-red-500' 
-              : isOpen 
-                ? 'border-gold-500' 
-                : 'border-gray-200 group-hover:border-gray-300'
+            ${
+              error
+                ? "border-red-500"
+                : isOpen
+                ? "border-[#C5A059]"
+                : "border-gray-200 group-hover:border-gray-300"
             }
           `}
         >
-          <span className={`text-base ${value ? 'text-gray-900' : 'text-transparent'}`}>
-            {selectedOption ? selectedOption.label : 'Select'}
+          <span
+            className={`text-base ${
+              value ? "text-gray-900" : "text-transparent"
+            }`}
+          >
+            {selectedOption ? selectedOption.label : "Select"}
           </span>
-          
-          <ChevronDown 
+
+          <ChevronDown
             className={`
               w-4 h-4 transition-all duration-300 
-              ${error ? 'text-red-400' : isOpen ? 'text-gold-600' : 'text-gray-400 group-hover:text-gray-600'}
-              ${isOpen ? 'rotate-180' : ''}
-            `} 
+              ${
+                error
+                  ? "text-red-400"
+                  : isOpen
+                  ? "text-[#B08D45]"
+                  : "text-gray-400 group-hover:text-gray-600"
+              }
+              ${isOpen ? "rotate-180" : ""}
+            `}
           />
         </div>
 
         {/* Dropdown Menu */}
-        <div 
+        <div
           className={`
             absolute top-full left-0 w-full mt-1 bg-white border border-gray-100 shadow-xl rounded-sm z-50
             max-h-60 overflow-auto transition-all duration-200 origin-top
-            ${isOpen 
-              ? 'opacity-100 translate-y-0 visible' 
-              : 'opacity-0 -translate-y-2 invisible pointer-events-none'
+            ${
+              isOpen
+                ? "opacity-100 translate-y-0 visible"
+                : "opacity-0 -translate-y-2 invisible pointer-events-none"
             }
           `}
           role="listbox"
@@ -120,9 +140,10 @@ export const Select: React.FC<SelectProps> = ({
                 aria-selected={isSelected}
                 className={`
                   px-4 py-3 text-sm cursor-pointer flex items-center justify-between transition-colors
-                  ${isSelected 
-                    ? 'bg-gold-500/10 text-gold-600 font-medium' 
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  ${
+                    isSelected
+                      ? "bg-[#C5A059]/10 text-[#B08D45] font-medium"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                   }
                 `}
               >
@@ -133,8 +154,12 @@ export const Select: React.FC<SelectProps> = ({
           })}
         </div>
       </div>
-      
-      {error && <span className="text-xs text-red-500 animate-pulse font-medium">{error}</span>}
+
+      {error && (
+        <span className="text-xs text-red-500 animate-pulse font-medium">
+          {error}
+        </span>
+      )}
     </div>
   );
 };
