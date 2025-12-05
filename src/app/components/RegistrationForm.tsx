@@ -18,6 +18,8 @@ export const RegistrationForm: React.FC = () => {
     contact: string;
     email: string;
     agreeWhatsApp: boolean;
+    currentCar: string;
+    considerPurchase: string;
   };
 
   const initialFormState: FormState = {
@@ -26,6 +28,8 @@ export const RegistrationForm: React.FC = () => {
     contact: "",
     email: "",
     agreeWhatsApp: false,
+    currentCar: "",
+    considerPurchase: "",
   };
 
   const [formData, setFormData] = useState<FormState>(initialFormState);
@@ -34,7 +38,7 @@ export const RegistrationForm: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const paxOptions = Array.from({ length: 10 }, (_, i) => ({
+  const paxOptions = Array.from({ length: 5 }, (_, i) => ({
     value: i + 1,
     label: `${i + 1} Guest${i > 0 ? "s" : ""}`,
   }));
@@ -54,7 +58,13 @@ export const RegistrationForm: React.FC = () => {
 
     if (!formData.agreeWhatsApp)
       newErrors.agreeWhatsApp =
-        "You must agree to receive event updates and your entry pass via WhatsApp.";
+        "You must agree to receive event updates and your entry pass via my mail.";
+
+    if (!formData.currentCar.trim() || formData.currentCar.trim().length < 2)
+      newErrors.currentCar = "Please enter the car you are currently driving.";
+
+    if (!formData.considerPurchase)
+      newErrors.considerPurchase = "Please select an option.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -175,9 +185,9 @@ export const RegistrationForm: React.FC = () => {
               .
               <br />
               Your access has been secured. A confirmation message along with
-              your entry code has been sent to your WhatsApp number.
+              your entry code has been sent to your mail address.
               <br />
-              Please bring that WhatsApp message with you when you arrive at the
+              Please bring that mail message with you when you arrive at the
               venue.
             </p>
           </div>
@@ -263,6 +273,59 @@ export const RegistrationForm: React.FC = () => {
             error={errors.email}
           />
 
+          <Input
+            label="Current Car You Are Driving"
+            name="currentCar"
+            autoComplete="off"
+            value={formData.currentCar}
+            onChange={(e) => handleChange("currentCar", e.target.value)}
+            error={errors.currentCar}
+          />
+
+          {/* Are You Considering Purchasing a New Car? */}
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-gray-700">
+              Are You Considering Purchasing a New Car?
+            </label>
+            <div className="flex items-center space-x-6">
+              <label className="flex items-center cursor-pointer group">
+                <input
+                  type="radio"
+                  name="considerPurchase"
+                  value="yes"
+                  checked={formData.considerPurchase === "yes"}
+                  onChange={(e) =>
+                    handleChange("considerPurchase", e.target.value)
+                  }
+                  className="w-4 h-4 accent-[#C5A059] cursor-pointer"
+                />
+                <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900">
+                  Yes
+                </span>
+              </label>
+              <label className="flex items-center cursor-pointer group">
+                <input
+                  type="radio"
+                  name="considerPurchase"
+                  value="no"
+                  checked={formData.considerPurchase === "no"}
+                  onChange={(e) =>
+                    handleChange("considerPurchase", e.target.value)
+                  }
+                  className="w-4 h-4 accent-[#C5A059] cursor-pointer"
+                />
+                <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900">
+                  No
+                </span>
+              </label>
+            </div>
+            {errors.considerPurchase && (
+              <span className="text-xs text-red-500 font-medium">
+                {errors.considerPurchase}
+              </span>
+            )}
+          </div>
+
           {/* WhatsApp consent checkbox */}
           <div className="flex items-start space-x-3">
             <div className="flex items-center justify-center mt-1">
@@ -278,7 +341,7 @@ export const RegistrationForm: React.FC = () => {
             </div>
             <div className="flex-1">
               <label htmlFor="agreeWhatsApp" className="text-sm text-gray-700">
-                I agree to receive event updates and my entry pass via WhatsApp.
+                I agree to receive event updates and my entry pass via email.
               </label>
               {errors.agreeWhatsApp && (
                 <div className="text-xs text-red-500 mt-2 font-medium">
@@ -290,7 +353,7 @@ export const RegistrationForm: React.FC = () => {
 
           {submitError && (
             <div className="p-4 bg-red-50 border border-red-100 rounded-md flex items-start space-x-3 text-red-700 animate-fade-in">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-semibold">Submission Failed</p>
                 <p>{submitError}</p>
@@ -327,7 +390,7 @@ export const RegistrationForm: React.FC = () => {
             </button>
           </div>
 
-          <p className="text-center text-[10px] text-gray-400 mt-2 tracking-widest uppercase">
+          <p className="text-center text-[18px] text-gray-400 mt-2 tracking-widest uppercase">
             BMW Bird Automotive × EO Gurugram
           </p>
         </form>

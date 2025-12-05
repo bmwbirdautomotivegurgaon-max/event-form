@@ -9,16 +9,7 @@ export const HeroPanel: React.FC = () => {
         className="absolute inset-0 w-full h-full object-cover object-top opacity-80"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-
-      {/* Logo */}
-      <div className="absolute top-8 left-8">
-        <img
-          src="/logo.png"
-          alt="Bird Automotive Logo"
-          className="w-full h-12"
-        />
-      </div>
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-black/20" />
 
       {/* Text */}
       <div className="absolute bottom-12 left-8 md:bottom-16 md:left-12 max-w-md text-white">

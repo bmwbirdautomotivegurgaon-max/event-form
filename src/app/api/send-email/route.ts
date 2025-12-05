@@ -69,9 +69,8 @@
 // }
 
 import nodemailer from "nodemailer";
-import twilio from "twilio";
 
-// Generate access code (used for email + WhatsApp)
+// Generate access code for attendee
 function generateAccessCode() {
   return (
     Math.random().toString(36).substring(2, 6).toUpperCase() +
@@ -83,6 +82,15 @@ function generateAccessCode() {
 // Prevent Gmail threading (unique subject identifier)
 function generateEmailThreadBreaker() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
+// Determine salutation based on name
+function getSalutation(name: string): string {
+  const femalePatterns = [/a$/, /i$/, /ia$/, /sha$/, /she$/, /shi$/];
+  const nameWords = name.trim().split(" ");
+  const firstName = nameWords[0].toLowerCase();
+  const isFemale = femalePatterns.some((pattern) => pattern.test(firstName));
+  return isFemale ? "Ms." : "Mr.";
 }
 
 export async function POST(request: Request) {
@@ -98,12 +106,6 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-
-    // Check Twilio credentials (optional until upgraded)
-    const canSendWhatsApp =
-      process.env.TWILIO_ACCOUNT_SID &&
-      process.env.TWILIO_AUTH_TOKEN &&
-      process.env.TWILIO_WHATSAPP_FROM;
 
     // Generate both codes
     const accessCode = generateAccessCode();
@@ -145,49 +147,58 @@ export async function POST(request: Request) {
 
     //
     // ----------------------
-    // 2) SEND WHATSAPP TO ATTENDEE
+    // 2) SEND CONFIRMATION EMAIL TO ATTENDEE
     // ----------------------
     //
-    if (canSendWhatsApp) {
-      const client = twilio(
-        process.env.TWILIO_ACCOUNT_SID as string,
-        process.env.TWILIO_AUTH_TOKEN as string
-      );
+    const salutation = getSalutation(name);
 
-      const whatsappMessage = `
-Thank you for confirming your attendance, Mr. ${name}.
-Your tickets for ${pax} adults have been reserved.
+    const attendeeEmailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        <div style="padding: 30px; background-color: #fff;">
+          <p style="font-size: 16px; color: #333; margin-bottom: 20px;">Dear ${salutation} ${name},</p>
+          
+          <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+            Thank you for confirming your attendance. We are pleased to inform you that your tickets for <strong>${pax} adult${
+      pax > 1 ? "s" : ""
+    }</strong> have been successfully reserved.
+          </p>
 
-Your Access Code: ${accessCode}
+          <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
+            Please present this email at the entrance on arrival. Our team will be available to assist you and guide you to the auditorium.
+          </p>
 
-Please present this message at the entrance, and our team will guide you to the auditorium.
-Wishing you an enjoyable cinematic experience.
+          <div style="background-color: #f0f0f0; padding: 20px; border-left: 4px solid #C5A059; margin: 25px 0;">
+            <p style="margin: 0; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Your Reservation Code</p>
+            <p style="margin: 15px 0 0 0; font-size: 28px; font-weight: bold; color: #C5A059; font-family: monospace; letter-spacing: 3px;">${accessCode}</p>
+          </div>
 
-PVR INOX × Bird Automotive
-      `;
+          <p style="color: #666; line-height: 1.8; margin: 25px 0;">
+            Wishing you a wonderful and enjoyable cinematic experience.
+          </p>
 
-      await client.messages.create({
-        from: `whatsapp:${process.env.TWILIO_WHATSAPP_FROM}`,
-        to: `whatsapp:+91${contact}`,
-        body: whatsappMessage.trim(),
-      });
+          <p style="color: #666; font-size: 14px; margin-top: 30px; margin-bottom: 5px; font-weight: bold;">
+            Warm regards,
+          </p>
+          <p style="color: #666; font-size: 14px; margin: 0; line-height: 1.8;">
+            <strong>PVR INOX</strong> | <strong>Bird Automotive</strong> | <strong>EO Gurgaon</strong>
+          </p>
+        </div>
+      </div>
+    `;
 
-      console.log("WhatsApp message sent!");
-    } else {
-      console.log(
-        "WhatsApp not sent — Twilio credentials missing (expected until upgrade)."
-      );
-    }
+    await transporter.sendMail({
+      from: `"PVR INOX | Bird Automotive" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `Confirmation of Your Ticket Reservation – PVR INOX | Bird Automotive | EO Gurgaon`,
+      html: attendeeEmailHtml,
+    });
 
-    //
-    // ----------------------
-    // SUCCESS RESPONSE
-    // ----------------------
-    //
+    console.log("Attendee confirmation email sent to:", email);
+
     return Response.json(
       {
         success: true,
-        message: "Email sent. WhatsApp queued (if Twilio enabled).",
+        message: "Registration confirmed. Confirmation email sent to attendee.",
         accessCode,
       },
       { status: 200 }
