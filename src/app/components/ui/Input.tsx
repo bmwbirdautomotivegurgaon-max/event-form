@@ -23,9 +23,9 @@ export const Input: React.FC<InputProps> = ({
             absolute transition-all duration-300 pointer-events-none font-medium
             ${
               isFocused
-                ? "text-xs -top-0 text-[#B08D45]"
+                ? "text-xs top-0 text-[#B08D45]"
                 : props.value
-                ? "text-xs -top-0 text-gray-500"
+                ? "text-xs top-0 text-gray-500"
                 : "text-sm top-4 text-gray-400"
             }
           `}
