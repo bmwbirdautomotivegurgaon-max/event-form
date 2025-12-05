@@ -341,7 +341,7 @@ export const RegistrationForm: React.FC = () => {
             </div>
             <div className="flex-1">
               <label htmlFor="agreeWhatsApp" className="text-sm text-gray-700">
-                I agree to receive event updates and my entry pass via email.
+                I agree to receive event updates email.
               </label>
               {errors.agreeWhatsApp && (
                 <div className="text-xs text-red-500 mt-2 font-medium">
