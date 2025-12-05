@@ -12,7 +12,7 @@ export const HeroPanel: React.FC = () => {
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-black/20" />
 
       {/* Text */}
-      <div className="absolute bottom-12 left-8 md:bottom-16 md:left-12 max-w-md text-white lg:pb-10">
+      <div className="absolute bottom-12 left-8 md:bottom-16 md:left-12 max-w-md text-white lg:pb-48">
         <p className="text-lg opacity-80 mb-2">Presenting</p>
 
         <h2
